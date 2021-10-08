@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Logo extends StatelessWidget {
-  const Logo({Key key}) : super(key: key);
+  Logo({Key key, this.width}) : super(key: key);
+  double width;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class Logo extends StatelessWidget {
         Align(
           alignment: Alignment.center,
           child: Container(
-            width: 180.0,
+            width: width ?? 180.0,
             child: Image.asset(
               'assets/images/eth_wallet.png',
               fit: BoxFit.contain,

@@ -10,3 +10,5 @@ https://github.com/simolus3/web3dart/issues/32
 In case of using http//:0.0.0.0:7545 try:
 
 https://stackoverflow.com/questions/64197752/bad-state-insecure-http-is-not-allowed-by-platform
+
+Add loading page in the end

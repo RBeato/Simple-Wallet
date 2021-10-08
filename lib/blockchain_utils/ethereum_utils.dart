@@ -86,10 +86,6 @@ class EthereumUtils {
     String functionName,
     List<dynamic> functionArgs,
   ) async {
-    print("contract $contract}");
-    print("functionMap[functionName] ${functionMap[functionName]}");
-    print("functionArgs $functionArgs");
-
     await ethClient.sendTransaction(
       credentials,
       Transaction.callContract(
