@@ -1,5 +1,4 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustomButton extends StatelessWidget {
   CustomButton({Key key, this.onPressed, this.text}) : super(key: key);

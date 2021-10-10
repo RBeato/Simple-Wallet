@@ -1,5 +1,5 @@
-class Wallet {
-  Wallet({
+class WalletModel {
+  WalletModel({
     this.total,
     this.deposited,
   });

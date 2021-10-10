@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final walletProvider =
     StateNotifierProvider<WalletProvider, dynamic>((ref) => WalletProvider());
 
-class WalletProvider extends StateNotifier<Wallet> {
-  WalletProvider() : super(Wallet());
+class WalletProvider extends StateNotifier<WalletModel> {
+  WalletProvider() : super(WalletModel());
 
-  void set(Wallet wallet) {
+  void set(WalletModel wallet) {
     state = wallet;
     print("changed state: $state");
   }

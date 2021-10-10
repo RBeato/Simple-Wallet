@@ -8,24 +8,29 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Check extends StatelessWidget {
-  const Check({
+class CheckBalances extends StatefulWidget {
+  const CheckBalances({
     Key key,
   }) : super(key: key);
 
+  @override
+  _CheckBalancesState createState() => _CheckBalancesState();
+}
+
+class _CheckBalancesState extends State<CheckBalances> {
   @override
   Widget build(BuildContext context) {
     int balance, totalDeposits;
 
     return Consumer(
       builder: (context, watch, _) {
-        watch(walletProvider);
+        // watch(walletProvider);
         return Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.07,
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: Neumorphic(
                   style: NeumorphicStyle(color: Colors.white.withOpacity(0.5)),
                   child: Row(
@@ -57,10 +62,10 @@ class Check extends StatelessWidget {
                     totalDeposits = depositResults.first?.toInt();
 
                     print("balance = $balance, totalDeposits = $totalDeposits");
+                    // setState(() {});
 
-                    context
-                        .read(walletProvider.notifier)
-                        .set(Wallet(total: balance, deposited: totalDeposits));
+                    context.read(walletProvider.notifier).set(
+                        WalletModel(total: balance, deposited: totalDeposits));
                   },
                 ),
               ],

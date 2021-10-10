@@ -4,12 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../logo.dart';
+import 'amount_input_forms.dart';
 import 'check_investment.dart';
-import 'deposit.dart';
-import 'widraw.dart';
+import 'input_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key}) : super(key: key);
+
+  final TextEditingController depositController = TextEditingController();
+  final TextEditingController widthrawController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,7 @@ class MyHomePage extends StatelessWidget {
                           right: 0.0,
                           child: SvgPicture.asset(
                             "assets/images/eth_wallet.svg",
-                            height: MediaQuery.of(context).size.height * 0.5,
+                            // height: 100,
                             color: Colors.white.withOpacity(0.15),
                           ),
                         ),
@@ -64,14 +69,11 @@ class MyHomePage extends StatelessWidget {
                             Expanded(flex: 2, child: Logo()),
                             Expanded(
                               flex: 7,
-                              child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Check(),
-                                    Deposit(),
-                                    Widthraw(),
-                                  ]),
+                              child: AmountInputForms(
+                                formKey: formKey,
+                                depositController: depositController,
+                                widthrawController: widthrawController,
+                              ),
                             )
                           ]),
                         ),
