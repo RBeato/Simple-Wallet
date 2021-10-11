@@ -50,7 +50,7 @@ class EthereumUtils {
   ContractFunction getBalanceAmount,
       getDepositAmount,
       addDepositAmount,
-      withdrawBalance;
+      withdrawAmount;
   Map<String, ContractFunction> functionMap;
 
   Future<void> getContractFunctions() async {
@@ -60,13 +60,13 @@ class EthereumUtils {
     getBalanceAmount = contract.function('getBalanceAmount');
     getDepositAmount = contract.function('getDepositAmount');
     addDepositAmount = contract.function('addDepositAmount');
-    withdrawBalance = contract.function('withdrawBalance');
+    withdrawAmount = contract.function('withdrawAmount');
 
     functionMap = {
       Constants.getBalanceAmount: getBalanceAmount,
       Constants.getDepositAmount: getDepositAmount,
       Constants.addDepositAmount: addDepositAmount,
-      Constants.withdrawBalance: withdrawBalance,
+      Constants.withdrawAmount: withdrawAmount,
     };
   }
 

@@ -1,18 +1,23 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class CustomButton extends StatelessWidget {
-  CustomButton({Key key, this.onPressed, this.text}) : super(key: key);
+  CustomButton({Key key, this.onPressed, this.text, this.opacity})
+      : super(key: key);
 
   final Function onPressed;
   final String text;
+  final double opacity;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        child: Text(text),
-        onPressed: onPressed,
+      child: Opacity(
+        opacity: opacity,
+        child: ElevatedButton(
+          child: Text(text),
+          onPressed: onPressed,
+        ),
       ),
     );
 

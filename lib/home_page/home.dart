@@ -1,12 +1,11 @@
 import 'package:basic_wallet/blockchain_utils/ethereum_utils.dart';
+import 'package:basic_wallet/models/auto_validate_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../logo.dart';
 import 'amount_input_forms.dart';
-import 'check_investment.dart';
-import 'input_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key key}) : super(key: key);
@@ -44,6 +43,9 @@ class MyHomePage extends StatelessWidget {
 
                   if (!currentFocus.hasPrimaryFocus) {
                     currentFocus.unfocus();
+                    context
+                        .read(autoValidateProvider.notifier)
+                        .setMode(AutovalidateMode.disabled);
                   }
                 },
                 child: SingleChildScrollView(

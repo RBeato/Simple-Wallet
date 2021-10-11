@@ -2,7 +2,6 @@ import 'package:basic_wallet/home_page/custom_button.dart';
 import 'package:basic_wallet/blockchain_utils/ethereum_utils.dart';
 import 'package:basic_wallet/constants.dart';
 import 'package:basic_wallet/models/wallet.dart';
-import 'package:basic_wallet/providers/wallet_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,6 +48,7 @@ class _CheckBalancesState extends State<CheckBalances> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 CustomButton(
+                  opacity: 1.0, //
                   text: "Check Investment",
                   onPressed: () async {
                     var balanceResults = await context

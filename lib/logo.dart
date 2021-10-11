@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Logo extends StatelessWidget {
   Logo({Key key, this.width}) : super(key: key);
-  double width;
+  final double width;
 
   @override
   Widget build(BuildContext context) {

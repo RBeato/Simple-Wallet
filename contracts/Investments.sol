@@ -2,14 +2,18 @@
 pragma solidity >=0.6.2 <0.9.0;
 
 contract Investment{
+
+
     uint256 balanceAmount;
-    uint256 depositAmount;
+    uint256 depositValue;
     uint256 thresholdAmount;
     uint256 returnOnInvestment;
     
+    event DepositedAmount(uint amount);
+    event WidthrawnAmount(uint amount);
+
+
     constructor(){
-    balanceAmount = 0;
-    depositAmount = 0;
     thresholdAmount = 12;
     returnOnInvestment = 3;
     }
@@ -18,22 +22,27 @@ contract Investment{
         return balanceAmount;
     }
     
-    
     function getDepositAmount() public view returns (uint256){
-        return depositAmount;
+        return depositValue;
     }
     
-    function addDepositAmount(uint256 amount) public{
-        depositAmount = depositAmount + amount;
+    function addDepositAmount(uint256 deposit) public{
+        depositValue += deposit;
+        balanceAmount += deposit;
         
-        if(depositAmount >= thresholdAmount){
+        if(depositValue >= thresholdAmount){
             balanceAmount += returnOnInvestment;
         }
+        
+        emit DepositedAmount(deposit);
     }
     
-    function withdrawBalance() public {
-        balanceAmount = 0;
-        depositAmount = 0;
+    function withdrawAmount(uint256 widthraw) public {
+        require(balanceAmount > widthraw, "not enought balance");
+        balanceAmount -= widthraw;
+        depositValue -= widthraw;
+
+        emit WidthrawnAmount(widthraw);
     }
     
 }
