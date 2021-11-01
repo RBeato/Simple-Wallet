@@ -1,12 +1,14 @@
 import 'package:basic_wallet/splash_screen/splash_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //TODO: widthram must receive parameters in contract
 //TODO: Events?
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(ProviderScope(child: MyApp()));
 }
 

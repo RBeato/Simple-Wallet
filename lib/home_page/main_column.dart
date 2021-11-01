@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'check_investment.dart';
 import 'input_form.dart';
 
-class AmountInputForms extends StatelessWidget {
-  const AmountInputForms({
+class MainColumn extends StatelessWidget {
+  const MainColumn({
     Key key,
     @required this.formKey,
     @required this.depositController,
@@ -25,7 +25,7 @@ class AmountInputForms extends StatelessWidget {
             formtype: FormType.deposit,
             textController: depositController,
             labelText: "Amount to deposit (in eth)",
-            hintText: "2 eth",
+            hintText: "2",
             buttonText: "Deposit",
           ),
           InputForm(

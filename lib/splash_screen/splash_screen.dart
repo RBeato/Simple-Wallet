@@ -13,6 +13,7 @@ class AnimatedLogo extends AnimatedWidget {
     final animation = listenable as Animation<double>;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      // backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           Container(

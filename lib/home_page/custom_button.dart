@@ -1,4 +1,4 @@
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   CustomButton({Key key, this.onPressed, this.text, this.opacity})
