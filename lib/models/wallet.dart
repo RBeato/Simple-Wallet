@@ -4,30 +4,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants.dart';
 
 final walletProvider = FutureProvider((ref) async {
-  var balanceResult = await ref
-      .watch(ethereumUtilsProvider)
-      .readContract(Constants.getBalanceAmount, []);
-  int balance = balanceResult?.first?.toInt();
+  WalletModel wallet;
 
-  var depositResult = await ref
-      .watch(ethereumUtilsProvider)
-      .readContract(Constants.getDepositAmount, []);
-  int totalDeposit = depositResult.first?.toInt();
+  await ref.watch(ethereumUtilsProvider).listenContract().then((decoded) {
+    wallet = decoded;
+  });
 
-  return WalletModel(deposited: totalDeposit, total: balance);
+  getWallet() async {
+    final balanceResult = await ref
+        .watch(ethereumUtilsProvider)
+        .readContract(Constants.getBalanceAmount, []);
+    int balance = balanceResult?.first?.toInt();
+
+    final depositResult = await ref
+        .watch(ethereumUtilsProvider)
+        .readContract(Constants.getDepositAmount, []);
+    int totalDeposit = depositResult.first?.toInt();
+
+    return WalletModel(deposited: totalDeposit, total: balance);
+  }
+
+  return wallet ?? getWallet();
 });
-
-// final walletProvider =
-//     StateNotifierProvider<WalletProvider, dynamic>((ref) => WalletProvider());
-
-// class WalletProvider extends StateNotifier<WalletModel> {
-//   WalletProvider() : super(WalletModel());
-
-//   void set(WalletModel wallet) {
-//     state = wallet;
-//     print("wallet changed state: $state");
-//   }
-// }
 
 class WalletModel {
   WalletModel({

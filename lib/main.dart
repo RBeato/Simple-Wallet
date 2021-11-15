@@ -4,8 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-//TODO: widthram must receive parameters in contract
-//TODO: Events?
+// TODO: widthram must receive parameters in contract
+// TODO: Events?
 
 Future main() async {
   await dotenv.load(fileName: ".env");

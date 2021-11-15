@@ -4,8 +4,7 @@ import 'package:basic_wallet/models/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../constants.dart';
+import 'package:web3dart/credentials.dart';
 
 class CheckBalances extends StatelessWidget {
   const CheckBalances({
@@ -17,6 +16,7 @@ class CheckBalances extends StatelessWidget {
     return Column(
       children: [
         BalanceData(),
+        EventData(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -24,7 +24,9 @@ class CheckBalances extends StatelessWidget {
               opacity: 1.0, //
               text: "Check Investment",
               onPressed: () async {
-                context.read(walletProvider).data;
+                // context.read(walletProvider).data;
+                //replace with
+                //setState{()}
               },
             ),
           ],
@@ -34,72 +36,63 @@ class CheckBalances extends StatelessWidget {
   }
 }
 
-class BalanceData extends StatefulWidget {
-  const BalanceData({Key key}) : super(key: key);
+class EventData extends StatelessWidget {
+  const EventData({Key key}) : super(key: key);
 
   @override
-  State<BalanceData> createState() => _BalanceDataState();
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Text("Event Data"),
+      Consumer(builder: (context, watch, _) {
+        var ethUtils = watch(ethereumUtilsProvider);
+        return FutureBuilder(
+            future: ethUtils.listenContract(),
+            initialData: WalletModel(deposited: 5, total: 5),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Text('Loading....');
+                default:
+                  if (snapshot.hasError)
+                    return Text('Error: ${snapshot.error}');
+                  else
+                    return Text('Result: ${snapshot.data}');
+              }
+            });
+      })
+    ]);
+  }
 }
 
-class _BalanceDataState extends State<BalanceData> {
-  WalletModel walletModel = WalletModel();
+//! tRY to listen to the events, if it comes null call the balance directly. if (!hasData) fetchBalance()
 
-  @override
-  void initState() {
-    super.initState();
-    getWallet();
-  }
-
-  getWallet() async {
-    var balanceResult = await context
-        .read(ethereumUtilsProvider)
-        .readContract(Constants.getBalanceAmount, []);
-    walletModel.total = balanceResult?.first?.toInt();
-
-    var depositResult = await context
-        .read(ethereumUtilsProvider)
-        .readContract(Constants.getDepositAmount, []);
-    walletModel.deposited = depositResult?.first?.toInt();
-
-    print("initState balanceResult: $walletModel");
-  }
+class BalanceData extends StatelessWidget {
+  const BalanceData({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, watch, _) {
-      var ethUtils = watch(ethereumUtilsProvider);
-
-      return FutureBuilder(
-          future: ethUtils.listenContract(),
-          initialData: {"deposit": 0, "balance": 0},
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text("Error!");
-            } else {
-              if (!snapshot.hasData) {
-                return Center(child: const CircularProgressIndicator());
-              }
-              walletModel = WalletModel(
-                  deposited: snapshot.data[1].toInt(),
-                  total: snapshot.data[0].toInt());
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      checkInvestmentInfoBoxText(
-                          "Balance: ${walletModel.total ?? 0}"),
-                      checkInvestmentInfoBoxText(
-                          "Deposit: ${walletModel.deposited ?? 0}"),
-                    ],
-                  ),
+      var walletPrvdr = watch(walletProvider);
+      return walletPrvdr.when(
+          loading: () => CircularProgressIndicator(),
+          error: (error, stack) => Text(error.toString()),
+          data: (data) {
+            WalletModel wallet = data as WalletModel;
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    // Text(data.runtimeType.toString())
+                    checkInvestmentInfoBoxText("Balance: ${wallet.total ?? 0}"),
+                    checkInvestmentInfoBoxText(
+                        "Deposit: ${wallet.deposited ?? 0}"),
+                  ],
                 ),
-              );
-            }
+              ),
+            );
           });
     });
   }

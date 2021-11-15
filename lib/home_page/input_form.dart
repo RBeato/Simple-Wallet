@@ -30,7 +30,7 @@ class InputForm extends StatefulWidget {
 
 class _InputFormState extends State<InputForm> {
   var _numberForm = GlobalKey<FormState>();
-  String _value = '';
+  // String _value = '';
   bool isDeposit = true;
 
   @override
