@@ -6,14 +6,14 @@ import 'package:flutter_svg/svg.dart';
 import '../logo.dart';
 import 'main_column.dart';
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   MyHomePage({Key key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   final TextEditingController depositController = TextEditingController();
 
   final TextEditingController widthrawController = TextEditingController();
@@ -25,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    context.read(ethereumUtilsProvider).initialSetup();
+    ref.read(ethereumUtilsProvider).initialSetup();
   }
 
   @override

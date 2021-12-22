@@ -8,7 +8,7 @@ import '../constants.dart';
 
 enum FormType { deposit, widthraw }
 
-class InputForm extends StatefulWidget {
+class InputForm extends ConsumerStatefulWidget {
   InputForm({
     Key key,
     this.textController,
@@ -28,9 +28,8 @@ class InputForm extends StatefulWidget {
   _InputFormState createState() => _InputFormState();
 }
 
-class _InputFormState extends State<InputForm> {
+class _InputFormState extends ConsumerState<InputForm> {
   var _numberForm = GlobalKey<FormState>();
-  // String _value = '';
   bool isDeposit = true;
 
   @override
@@ -66,9 +65,9 @@ class _InputFormState extends State<InputForm> {
                       autofocus: false,
                       textInputAction: TextInputAction.done,
                       keyboardAppearance: Brightness.light,
-                      // onChanged: (value) {
-                      //   setState(() {});
-                      // },
+                      onChanged: (value) {
+                        // setState(() {});
+                      },
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
                       ]),
@@ -84,13 +83,13 @@ class _InputFormState extends State<InputForm> {
                   print("Amount : $amount");
 
                   if (isDeposit) {
-                    await context.read(ethereumUtilsProvider).writeToContract(
+                    await ref.read(ethereumUtilsProvider).writeToContract(
                       Constants.addDepositAmount,
                       [amount],
                     );
                     print("Deposited amount: $amount");
                   } else {
-                    await context
+                    await ref
                         .read(ethereumUtilsProvider)
                         .writeToContract(Constants.withdrawAmount, [amount]);
                     print("Widthdrawn amount: $amount");

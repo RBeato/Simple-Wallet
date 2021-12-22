@@ -15,12 +15,8 @@ contract Investment{
     returnOnInvestment = 3;
     }
     
-    function getBalanceAmount()  public view returns (uint256){
-        return balanceAmount;
-    }
-    
-    function getDepositAmount() public view returns (uint256){
-        return depositValue;
+    function getWallet()  public view returns (uint256 _balanceAmount, uint256 _depositValue){
+        return (_balanceAmount = balanceAmount, _depositValue = depositValue);
     }
     
     function addDepositAmount(uint256 deposit) public{

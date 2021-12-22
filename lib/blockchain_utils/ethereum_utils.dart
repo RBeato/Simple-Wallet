@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:basic_wallet/models/wallet.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,7 @@ class EthereumUtils {
   EthereumAddress contractAddress;
   DeployedContract contract;
   var decoded;
+  WalletModel wallet;
 
   void initialSetup() async {
     _httpClient = http.Client();
@@ -37,14 +39,14 @@ class EthereumUtils {
 
   Future listenContract() async {
     contract = await _getContract();
-    listenEvent(SCEvents.Balance);
+    listenEvent();
     return decoded;
   }
 
-  StreamSubscription listenEvent(SCEvents type) {
+  StreamSubscription listenEvent() {
     var events = _ethClient.events(FilterOptions.events(
       contract: contract,
-      event: _getEvent(type),
+      event: contract.event('BalanceChange'),
     ));
     return events.listen((FilterEvent event) {
       if (event.topics == null || event.data == null) {
@@ -53,16 +55,8 @@ class EthereumUtils {
       decoded = contract
           .event('BalanceChange')
           .decodeResults(event.topics, event.data);
-      print(decoded);
+      print("Listen Event: $decoded");
     });
-  }
-
-  ContractEvent _getEvent(SCEvents type) {
-    switch (type) {
-      case SCEvents.Balance:
-        return contract.event('BalanceChange');
-      //*add events...
-    }
   }
 
   Future<DeployedContract> _getContract() async {
@@ -116,5 +110,6 @@ class EthereumUtils {
 
   Future<void> dispose() async {
     await _ethClient.dispose();
+    await listenEvent().cancel();
   }
 }
