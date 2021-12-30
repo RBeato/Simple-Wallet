@@ -35,7 +35,7 @@ class _BalanceDataState extends ConsumerState<BalanceData> {
   @override
   void initState() {
     super.initState();
-    ethUtils = ref.read(ethereumUtilsProvider);
+    // ethUtils = ref.read(ethereumUtilsProvider);
     // futureBuilder info video: https://www.youtube.com/watch?v=LYN46233cws
   }
 

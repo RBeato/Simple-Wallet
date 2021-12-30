@@ -1,6 +1,5 @@
 import 'package:basic_wallet/home_page/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../logo.dart';
