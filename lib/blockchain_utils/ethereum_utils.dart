@@ -6,9 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:web_socket_channel/io.dart';
+
+const String savedBalance = "savedBalance";
 
 final ethereumUtilsProvider = Provider((ref) => EthereumUtils());
 
@@ -23,14 +26,16 @@ class EthereumUtils {
   String _wsUrl = 'ws://192.168.1.79:7545';
   String privateKey = dotenv.env['GANACHE_PRIVATE_KEY'];
   Credentials credentials;
+  SharedPreferences _prefs;
 
   String abi;
   EthereumAddress contractAddress;
   DeployedContract contract;
-  var decoded;
+  List decoded;
   WalletModel wallet;
 
   void initialSetup() async {
+    _prefs = await SharedPreferences.getInstance();
     _httpClient = http.Client();
     _ethClient = Web3Client(_rpcUrl, _httpClient, socketConnector: () {
       return IOWebSocketChannel.connect(_wsUrl).cast<String>();
@@ -56,6 +61,11 @@ class EthereumUtils {
           .event('BalanceChange')
           .decodeResults(event.topics, event.data);
       print("Listen Event: $decoded");
+
+      List<String> balanceList =
+          decoded.map((e) => e.toInt().toString()).toList();
+
+      _prefs.setStringList(savedBalance, balanceList);
     });
   }
 

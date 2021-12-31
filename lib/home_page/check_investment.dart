@@ -4,6 +4,7 @@ import 'package:basic_wallet/models/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CheckBalances extends StatelessWidget {
   const CheckBalances({
@@ -28,55 +29,78 @@ class BalanceData extends ConsumerStatefulWidget {
 }
 
 class _BalanceDataState extends ConsumerState<BalanceData> {
-  Future balanceFuture;
+  SharedPreferences _prefs;
   WalletModel walletModel = WalletModel();
   EthereumUtils ethUtils;
 
   @override
   void initState() {
     super.initState();
-    // ethUtils = ref.read(ethereumUtilsProvider);
-    // futureBuilder info video: https://www.youtube.com/watch?v=LYN46233cws
+    checkSavedValue();
+  }
+
+  checkSavedValue() async {
+    _prefs = await SharedPreferences.getInstance();
+    List data = _prefs.getStringList(savedBalance);
+    if (data.isNotEmpty) {
+      walletModel = WalletModel(
+        deposited: int.parse(data[0]),
+        total: int.parse(data[1]),
+      );
+    } else {
+      walletModel = WalletModel(
+        deposited: 0,
+        total: 0,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     ethUtils = ref.watch(ethereumUtilsProvider);
     return Consumer(builder: (context, watch, _) {
+      Widget widget;
       return FutureBuilder(
           future: ethUtils.listenContract(),
-          initialData: {"deposit": 0, "balance": 0},
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              widget = CircularProgressIndicator();
             } else if (snapshot.hasError) {
-              return Text("Error!");
-            } else {
-              if (!snapshot.hasData) {
-                print("BalanceData $walletModel");
-                return Center(child: const Text("No data yet!"));
+              widget = Text("Error!");
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.data != null) {
+                walletModel = WalletModel(
+                    deposited: snapshot.data[0].toInt(),
+                    total: snapshot.data[1].toInt());
               }
-              walletModel.deposited = snapshot.data[0].toInt();
-              walletModel.total = snapshot.data[1].toInt();
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      checkInvestmentInfoBoxText(
-                          "Balance: ${walletModel.total ?? 0}"),
-                      checkInvestmentInfoBoxText(
-                          "Deposit: ${walletModel.deposited ?? 0}"),
-                    ],
-                  ),
-                ),
-              );
+              widget = BalanceWidget(walletModel);
             }
+            return widget;
           });
     });
+  }
+}
+
+class BalanceWidget extends StatelessWidget {
+  BalanceWidget(this.walletModel, {Key key}) : super(key: key);
+  final WalletModel walletModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.05,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            checkInvestmentInfoBoxText("Balance: ${walletModel.total ?? 0}"),
+            checkInvestmentInfoBoxText(
+                "Deposit: ${walletModel.deposited ?? 0}"),
+          ],
+        ),
+      ),
+    );
   }
 
   Text checkInvestmentInfoBoxText(text) {
