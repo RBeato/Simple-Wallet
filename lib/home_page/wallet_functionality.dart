@@ -1,39 +1,37 @@
 import 'package:flutter/material.dart';
 
-import 'check_investment.dart';
+import 'wallet_info.dart';
 import 'input_form.dart';
 
-class MainColumn extends StatelessWidget {
-  const MainColumn({
-    Key key,
-    @required this.formKey,
-    @required this.depositController,
-    @required this.widthrawController,
+class WalletFunctionality extends StatelessWidget {
+  const WalletFunctionality({
+    Key? key,
+    required this.depositController,
+    required this.withdrawController,
   }) : super(key: key);
 
-  final GlobalKey<FormState> formKey;
   final TextEditingController depositController;
-  final TextEditingController widthrawController;
+  final TextEditingController withdrawController;
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      CheckBalances(),
+      WalletInfo(),
       Column(
         children: [
           InputForm(
-            formtype: FormType.deposit,
+            formType: FormType.deposit,
             textController: depositController,
             labelText: "Amount to deposit (in eth)",
             hintText: "2",
             buttonText: "Deposit",
           ),
           InputForm(
-            formtype: FormType.widthraw,
-            textController: widthrawController,
-            labelText: "Amount to widthraw (in eth)",
+            formType: FormType.withdraw,
+            textController: withdrawController,
+            labelText: "Amount to withdraw (in eth)",
             hintText: "1 eth",
-            buttonText: "Widthraw",
+            buttonText: "Withdraw",
           ),
         ],
       )

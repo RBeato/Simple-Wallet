@@ -1,37 +1,21 @@
 import 'package:basic_wallet/blockchain_utils/ethereum_utils.dart';
-import 'package:basic_wallet/home_page/custom_button.dart';
 import 'package:basic_wallet/models/wallet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CheckBalances extends StatelessWidget {
-  const CheckBalances({
-    Key key,
-  }) : super(key: key);
+class WalletInfo extends ConsumerStatefulWidget {
+  const WalletInfo({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BalanceData(),
-      ],
-    );
-  }
+  _WalletInfoState createState() => _WalletInfoState();
 }
 
-class BalanceData extends ConsumerStatefulWidget {
-  const BalanceData({Key key}) : super(key: key);
-
-  @override
-  _BalanceDataState createState() => _BalanceDataState();
-}
-
-class _BalanceDataState extends ConsumerState<BalanceData> {
-  SharedPreferences _prefs;
-  WalletModel walletModel = WalletModel();
-  EthereumUtils ethUtils;
+class _WalletInfoState extends ConsumerState<WalletInfo> {
+  late SharedPreferences _prefs;
+  late WalletModel? walletModel;
+  late EthereumUtils ethUtils;
 
   @override
   void initState() {
@@ -41,16 +25,16 @@ class _BalanceDataState extends ConsumerState<BalanceData> {
 
   checkSavedValue() async {
     _prefs = await SharedPreferences.getInstance();
-    List data = _prefs.getStringList(savedBalance);
+    List data = _prefs.getStringList(savedBalance)!;
     if (data.isNotEmpty) {
       walletModel = WalletModel(
         deposited: int.parse(data[0]),
-        total: int.parse(data[1]),
+        balance: int.parse(data[1]),
       );
     } else {
       walletModel = WalletModel(
         deposited: 0,
-        total: 0,
+        balance: 0,
       );
     }
   }
@@ -59,7 +43,7 @@ class _BalanceDataState extends ConsumerState<BalanceData> {
   Widget build(BuildContext context) {
     ethUtils = ref.watch(ethereumUtilsProvider);
     return Consumer(builder: (context, watch, _) {
-      Widget widget;
+      late Widget widget = Container(child: Text("No data!"));
       return FutureBuilder(
           future: ethUtils.listenContract(),
           builder: (context, snapshot) {
@@ -69,11 +53,12 @@ class _BalanceDataState extends ConsumerState<BalanceData> {
               widget = Text("Error!");
             } else if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.data != null) {
+                List? data = snapshot.data as List;
+
                 walletModel = WalletModel(
-                    deposited: snapshot.data[0].toInt(),
-                    total: snapshot.data[1].toInt());
+                    deposited: data[0].toInt(), balance: data[1].toInt());
               }
-              widget = BalanceWidget(walletModel);
+              widget = BalanceWidget(walletModel!);
             }
             return widget;
           });
@@ -82,7 +67,7 @@ class _BalanceDataState extends ConsumerState<BalanceData> {
 }
 
 class BalanceWidget extends StatelessWidget {
-  BalanceWidget(this.walletModel, {Key key}) : super(key: key);
+  BalanceWidget(this.walletModel, {Key? key}) : super(key: key);
   final WalletModel walletModel;
 
   @override
@@ -94,9 +79,8 @@ class BalanceWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            checkInvestmentInfoBoxText("Balance: ${walletModel.total ?? 0}"),
-            checkInvestmentInfoBoxText(
-                "Deposit: ${walletModel.deposited ?? 0}"),
+            checkInvestmentInfoBoxText("Balance: ${walletModel.balance}"),
+            checkInvestmentInfoBoxText("Deposit: ${walletModel.deposited}"),
           ],
         ),
       ),

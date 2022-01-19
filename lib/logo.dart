@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Logo extends StatelessWidget {
-  Logo({Key key, this.width}) : super(key: key);
-  final double width;
+  Logo({Key? key, this.width}) : super(key: key);
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +20,28 @@ class Logo extends StatelessWidget {
           ),
         ),
         Align(
-            alignment: Alignment.center,
-            child: Transform.rotate(
-              angle: 6.1,
-              child: Text("Basic Wallet!",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.dancingScript(
-                      //DancingScript
-                      color: Colors.white,
-                      fontSize: 60.0,
-                      fontWeight: FontWeight.w300,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(0.0, 3.0),
-                          blurRadius: 10.0,
-                          color: Color.fromARGB(255, 0, 0, 0),
-                        ),
-                      ])),
-            ))
+          alignment: Alignment.center,
+          child: Transform.rotate(
+            angle: 6.1,
+            child: Text(
+              "Simple Wallet!",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dancingScript(
+                //DancingScript
+                color: Colors.white,
+                fontSize: 60.0,
+                fontWeight: FontWeight.w300,
+                shadows: [
+                  Shadow(
+                    offset: Offset(0.0, 3.0),
+                    blurRadius: 10.0,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

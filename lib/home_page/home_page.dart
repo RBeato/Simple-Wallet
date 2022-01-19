@@ -4,16 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../logo.dart';
-import 'main_column.dart';
+import 'wallet_functionality.dart';
 
-class MyHomePage extends ConsumerStatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+class HomePage extends ConsumerStatefulWidget {
+  HomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends ConsumerState<MyHomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   final TextEditingController depositController = TextEditingController();
 
   final TextEditingController widthrawController = TextEditingController();
@@ -30,31 +30,31 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.blue[200],
-              Colors.blue[50],
-            ],
-            begin: const FractionalOffset(1.0, 1.0),
-            end: const FractionalOffset(1.0, 0.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp,
-          ),
-        ),
-        child: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
 
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.blue[200]!,
+                Colors.blue[50]!,
+              ],
+              begin: const FractionalOffset(1.0, 1.0),
+              end: const FractionalOffset(1.0, 0.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp,
+            ),
+          ),
           child: SingleChildScrollView(
             physics: ClampingScrollPhysics(),
             child: Container(
@@ -67,7 +67,6 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                     right: 0.0,
                     child: SvgPicture.asset(
                       "assets/images/eth_wallet.svg",
-                      // height: 100,
                       color: Colors.white.withOpacity(0.15),
                     ),
                   ),
@@ -78,10 +77,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                       Expanded(flex: 2, child: Logo()),
                       Expanded(
                         flex: 7,
-                        child: MainColumn(
-                          formKey: formKey,
+                        child: WalletFunctionality(
                           depositController: depositController,
-                          widthrawController: widthrawController,
+                          withdrawController: widthrawController,
                         ),
                       )
                     ]),

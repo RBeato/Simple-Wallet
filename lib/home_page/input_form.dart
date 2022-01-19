@@ -6,23 +6,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../constants.dart';
 
-enum FormType { deposit, widthraw }
+enum FormType { deposit, withdraw }
 
 class InputForm extends ConsumerStatefulWidget {
   InputForm({
-    Key key,
-    this.textController,
-    this.labelText,
-    this.hintText,
-    this.formtype,
-    this.buttonText,
+    Key? key,
+    required this.textController,
+    required this.labelText,
+    required this.hintText,
+    required this.formType,
+    required this.buttonText,
   }) : super(key: key);
 
   final TextEditingController textController;
   final String labelText;
   final String hintText;
   final String buttonText;
-  final FormType formtype;
+  final FormType formType;
 
   @override
   _InputFormState createState() => _InputFormState();
@@ -34,7 +34,7 @@ class _InputFormState extends ConsumerState<InputForm> {
 
   @override
   Widget build(BuildContext context) {
-    isDeposit = widget.formtype == FormType.deposit;
+    isDeposit = widget.formType == FormType.deposit;
     TextEditingController controller = widget.textController;
 
     return Padding(
@@ -50,8 +50,7 @@ class _InputFormState extends ConsumerState<InputForm> {
                     const EdgeInsets.only(left: 10, right: 10.0, bottom: 20.0),
                 child: Form(
                   child: TextFormField(
-                      autovalidateMode:
-                          AutovalidateMode.onUserInteraction, //s _autoValidate,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       key: const Key('address_to'),
                       keyboardType: TextInputType.number,
                       controller: controller,
@@ -65,9 +64,6 @@ class _InputFormState extends ConsumerState<InputForm> {
                       autofocus: false,
                       textInputAction: TextInputAction.done,
                       keyboardAppearance: Brightness.light,
-                      onChanged: (value) {
-                        // setState(() {});
-                      },
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
                       ]),
@@ -97,7 +93,6 @@ class _InputFormState extends ConsumerState<InputForm> {
 
                   widget.textController.clear();
                   FocusScope.of(context).requestFocus(FocusNode());
-                  setState(() {});
                 },
               ),
             ],
@@ -107,30 +102,3 @@ class _InputFormState extends ConsumerState<InputForm> {
     );
   }
 }
-
-//   void toBlockchain() async {
-//                   if (_value == '' || int.parse(_value) < 0) {
-//                     return;
-//                   } else {
-//                     BigInt amount = BigInt.from(int.parse(_value));
-//                     print("Amount : $amount");
-//                     if (isDeposit) {
-//                       await context.read(ethereumUtilsProvider).writeToContract(
-//                         Constants.addDepositAmount,
-//                         [amount],
-//                       );
-//                       print("Deposited amount: $amount");
-//                     } else {
-//                       await context
-//                           .read(ethereumUtilsProvider)
-//                           .writeToContract(Constants.withdrawAmount, [amount]);
-//                       print("Widthdrawn amount: $amount");
-//                     }
-//                   }
-//                   setState(() {});
-//                   context
-//                       .read(autoValidateProvider.notifier)
-//                       .setMode(AutovalidateMode.disabled);
-//                   widget.textController.clear();
-//                 },
-// }

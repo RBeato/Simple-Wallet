@@ -20,19 +20,19 @@ enum SCEvents {
 }
 
 class EthereumUtils {
-  http.Client _httpClient;
-  Web3Client _ethClient;
+  late http.Client _httpClient;
+  late Web3Client _ethClient;
   String _rpcUrl = 'HTTP://192.168.1.79:7545';
   String _wsUrl = 'ws://192.168.1.79:7545';
-  String privateKey = dotenv.env['GANACHE_PRIVATE_KEY'];
-  Credentials credentials;
-  SharedPreferences _prefs;
+  String? privateKey = dotenv.env['GANACHE_PRIVATE_KEY'];
+  late Credentials credentials;
+  late SharedPreferences _prefs;
 
-  String abi;
-  EthereumAddress contractAddress;
-  DeployedContract contract;
-  List decoded;
-  WalletModel wallet;
+  late String abi;
+  late EthereumAddress contractAddress;
+  late DeployedContract contract;
+  List? decoded;
+  late WalletModel wallet;
 
   void initialSetup() async {
     _prefs = await SharedPreferences.getInstance();
@@ -59,11 +59,11 @@ class EthereumUtils {
       }
       decoded = contract
           .event('BalanceChange')
-          .decodeResults(event.topics, event.data);
+          .decodeResults(event.topics!, event.data!);
       print("Listen Event: $decoded");
 
       List<String> balanceList =
-          decoded.map((e) => e.toInt().toString()).toList();
+          decoded!.map((e) => e.toInt().toString()).toList();
 
       _prefs.setStringList(savedBalance, balanceList);
     });
@@ -103,7 +103,7 @@ class EthereumUtils {
     List<dynamic> functionArgs,
   ) async {
     try {
-      credentials = EthPrivateKey.fromHex(privateKey);
+      credentials = EthPrivateKey.fromHex(privateKey!);
       DeployedContract contract = await _getContract();
       await _ethClient.sendTransaction(
         credentials,

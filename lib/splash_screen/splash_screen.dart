@@ -1,18 +1,17 @@
-import 'package:basic_wallet/home_page/home.dart';
+import 'package:basic_wallet/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../logo.dart';
 
 class AnimatedLogo extends AnimatedWidget {
-  AnimatedLogo({Key key, Animation<double> animation})
+  AnimatedLogo({Key? key, required Animation<double> animation})
       : super(key: key, listenable: animation);
 
   Widget build(BuildContext context) {
     final animation = listenable as Animation<double>;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      // backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           Container(
@@ -21,8 +20,8 @@ class AnimatedLogo extends AnimatedWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.blue[200],
-                  Colors.blue[50],
+                  Colors.blue[200]!,
+                  Colors.blue[50]!,
                 ],
                 begin: const FractionalOffset(1.0, 1.0),
                 end: const FractionalOffset(1.0, 0.0),
@@ -52,16 +51,16 @@ class AnimatedLogo extends AnimatedWidget {
   }
 }
 
-class LoadingPage extends StatefulWidget {
-  _LoadingPageState createState() => _LoadingPageState();
+class SplashScreen extends StatefulWidget {
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
 // #docregion  -state
-class _LoadingPageState extends State<LoadingPage>
+class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
-  bool condition;
+  late Animation<double> animation;
+  late AnimationController controller;
+  late bool condition;
 
   @override
   void initState() {
@@ -80,7 +79,7 @@ class _LoadingPageState extends State<LoadingPage>
     controller.forward();
     Future.delayed(Duration(milliseconds: 3500), () {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => (MyHomePage())));
+          context, MaterialPageRoute(builder: (context) => (HomePage())));
     });
   }
 

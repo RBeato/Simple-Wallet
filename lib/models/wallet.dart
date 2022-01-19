@@ -1,14 +1,14 @@
 class WalletModel {
   WalletModel({
-    this.total,
-    this.deposited,
+    required this.balance,
+    required this.deposited,
   });
 
-  int total = 0;
+  int balance = 0;
   int deposited = 0;
 
   @override
   String toString() {
-    return "Total value with interest: $total, from $deposited deposited";
+    return "Total value with interest: $balance, from $deposited deposited";
   }
 }
