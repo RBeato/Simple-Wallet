@@ -16,7 +16,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   final TextEditingController depositController = TextEditingController();
 
-  final TextEditingController widthrawController = TextEditingController();
+  final TextEditingController withdrawController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -33,7 +33,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
-
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.unfocus();
         }
@@ -79,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         flex: 7,
                         child: WalletFunctionality(
                           depositController: depositController,
-                          withdrawController: widthrawController,
+                          withdrawController: withdrawController,
                         ),
                       )
                     ]),

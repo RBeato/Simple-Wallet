@@ -26,7 +26,7 @@ contract Investment {
     }
 
     function addDepositAmount(uint256 deposit) public {
-        depositValue += deposit; // increase deposit
+        depositValue = deposit; // increase deposit
         balanceAmount += deposit; // decrease deposit
 
         if (depositValue >= thresholdAmount) {
@@ -37,9 +37,9 @@ contract Investment {
     }
 
     function withdrawAmount(uint256 withdraw) public {
-        require(balanceAmount > withdraw, "not enough balance"); // check if there is enough
+        require(balanceAmount >= withdraw, "not enough balance"); // check if there is enough
         balanceAmount -= withdraw; // deduce the withdraw amount from the balance
-        depositValue -= withdraw; // deduce the withdraw amount from the deposited value
+        depositValue = 0;
 
         emit BalanceChange(depositValue, balanceAmount); // emit event
     }

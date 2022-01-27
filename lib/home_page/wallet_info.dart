@@ -25,8 +25,8 @@ class _WalletInfoState extends ConsumerState<WalletInfo> {
 
   checkSavedValue() async {
     _prefs = await SharedPreferences.getInstance();
-    List data = _prefs.getStringList(savedBalance)!;
-    if (data.isNotEmpty) {
+    List? data = _prefs.getStringList(savedBalance);
+    if (data != null && data.isNotEmpty) {
       walletModel = WalletModel(
         deposited: int.parse(data[0]),
         balance: int.parse(data[1]),
@@ -80,7 +80,8 @@ class BalanceWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             checkInvestmentInfoBoxText("Balance: ${walletModel.balance}"),
-            checkInvestmentInfoBoxText("Deposit: ${walletModel.deposited}"),
+            checkInvestmentInfoBoxText(
+                "Last Deposit: ${walletModel.deposited}"),
           ],
         ),
       ),

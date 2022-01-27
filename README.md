@@ -28,6 +28,8 @@ A Flutter project to interact with the blockchain that uses truffle and solidity
       
 **4. Writing the Smart Contract**
 
+Inside the contracts folder create **Investment.sol**.
+
 ``` javascript
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.6.2 <0.9.0;
@@ -57,7 +59,7 @@ contract Investment {
     }
 
     function addDepositAmount(uint256 deposit) public {
-        depositValue += deposit; // increase deposit
+        depositValue = deposit; // increase deposit
         balanceAmount += deposit; // decrease deposit
 
         if (depositValue >= thresholdAmount) {
@@ -70,7 +72,7 @@ contract Investment {
     function withdrawAmount(uint256 withdraw) public {
         require(balanceAmount > withdraw, "not enough balance"); // check if there is enough
         balanceAmount -= withdraw; // deduce the withdraw amount from the balance
-        depositValue -= withdraw; // deduce the withdraw amount from the deposited value
+        depositValue = 0; // set the deposit value to 0 when making a withdraw
 
         emit BalanceChange(depositValue, balanceAmount); // emit event
     }
@@ -117,15 +119,11 @@ module.exports = {
   compilers: {
     solc: {
       version: "0.8.3",    // Fetch exact version from solc-bin (default: truffle's version)
-      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      // settings: {          // See the solidity docs for advice about optimization and evmVersion
-       optimizer: {
+        optimizer: {
          enabled: true,
          runs: 200
        },
-      //  evmVersion: "byzantium"
-      // }
-    }
+     }
   },
 
   db: {
@@ -133,6 +131,22 @@ module.exports = {
   }
 };
 ```
+
+Open truffle and create a new workspace.
+Click the key.
+ <p align="center">
+ <img src="markdown/new_workspace.png" alt="drawing" style="width:350px;"/>
+ </p>
+
+Go to the settings and in the workspace tab add the path to your truffle-config file.
+ <p align="center">
+ <img src="markdown/add_truffle_config.png" alt="drawing" style="width:350px;"/>
+ </p>
+
+ Also inside **Settings** go the server tab and change the **HOSTNAME**.
+  <p align="center">
+ <img src="markdown/server_host.png" alt="drawing" style="width:350px;"/>
+ </p>
 
 
 Now we can migrate the contract.
@@ -211,7 +225,7 @@ class WalletModel {
 }
 ```
 
-In the **lib/** folder create a **utils** folder and inside this folder create a **eth_utils.dart**  file, and add the following code.
+In the **lib/** folder create a **blockchain_utils** folder and inside this folder create a **ethereum_utils.dart**  file, and add the following code.
 
 ```dart
 import 'dart:convert';
@@ -347,6 +361,9 @@ void initialSetup() async {
 }
 ```
 **7.  Creating a UI to interact with the smart contract**
+ <p align="center">
+ <img src="markdown/ui_home.png" alt="drawing" style="width:250px;"/>
+ </p>
 
 * Add the **images** folder to the **assets** folder and inside place the *eth_wallet.png* and *eth_wallet.svg*.
   
@@ -503,7 +520,9 @@ Inside the `HomePage()`we will have a `Scaffold` with a `Container`for the blue 
     * The `WalletInfo()` widget;
     * A `Column` that uses the `InputForm`for the deposit and withdraw functionalities.
 
-![](markdown/home_page.png)
+ <p align="center">
+ <img src="markdown/home_page.png" alt="drawing" style="width:250px;"/>
+ </p>
   
 So, let's now create the folder **home_page** inside **lib**, and add **home_page.dart**
 inside it, with the following:
@@ -527,7 +546,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   final TextEditingController depositController = TextEditingController();
 
-  final TextEditingController widthrawController = TextEditingController();
+  final TextEditingController withdrawController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -590,7 +609,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         flex: 7,
                         child: WalletFunctionality(
                           depositController: depositController,
-                          widthrawController: widthrawController,
+                          withdrawController: withdrawController,
                         ),
                       )
                     ]),
@@ -614,22 +633,75 @@ Notice that we are reusing the `Logo()` widget inside `HomePage()`:
    alignment: Alignment.center,
    child: Column(children: [
     Expanded(flex: 1, child: Container()),
-    Expanded(flex: 2, child: Logo()), // *
+    Expanded(flex: 2, child: Logo()), //**
     Expanded(
       flex: 7,
       child: WalletFunctionality(
         depositController: depositController,
-        widthrawController: widthrawController,
+        withdrawController: withdrawController,
         ),
       )
     ]),
   ),
 ``` 
+Inside the **lib** folder create **Logo.dart**, and add the following content.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class Logo extends StatelessWidget {
+  Logo({Key? key, this.width}) : super(key: key);
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            width: width ?? 180.0,
+            child: Image.asset(
+              'assets/images/eth_wallet.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Transform.rotate(
+            angle: 6.1,
+            child: Text(
+              "Simple Wallet!",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.dancingScript(
+                //DancingScript
+                color: Colors.white,
+                fontSize: 60.0,
+                fontWeight: FontWeight.w300,
+                shadows: [
+                  Shadow(
+                    offset: Offset(0.0, 3.0),
+                    blurRadius: 10.0,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
 Now, let's create the `WalletFunctionality` widget. This is a `Column` with:
 * `WalletInfo`;
-* A `Column`that reuses the `InputForm` for the deposit and withdraw actions.
+* A `Column` that reuses the `InputForm` for the deposit and withdraw actions.
   
-Place the following code inside **wallet_functionality.dart** (inside the **home_page** folder):
+Place the following code inside **wallet_functionality.dart** (inside the **home_page** folder).
 
 ```dart
 import 'package:flutter/material.dart';
@@ -679,7 +751,7 @@ class WalletFunctionality extends StatelessWidget {
 The `InputForm` widget will be created in the **input_form.dart** file inside **home_page** folder.  Inside this widget we have a text field and a button.
 The `InputForm` parameters receives:
 * `TextEditingController textController` to allow to clean the field after submission;
-* `String labelText` is used show the user the text related to the text field functionality;
+* `String labelText` is used to show the user the text information about the text field functionality;
 * `String hintText` is shown as an hint text when the user starts to insert a value;
 * `FormType formType` for the widget o "know" if we are making a deposit or withdraw. It is used in the `onPressed` function;
 
@@ -920,7 +992,7 @@ class BalanceWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             checkInvestmentInfoBoxText("Balance: ${walletModel.balance}"),
-            checkInvestmentInfoBoxText("Deposit: ${walletModel.deposited}"),
+            checkInvestmentInfoBoxText("Last Deposit: ${walletModel.deposited}"),
           ],
         ),
       ),
@@ -950,7 +1022,7 @@ class BalanceWidget extends StatelessWidget {
 When the `WalletInfo` widget is created `initState()` is called. Inside this function we have the `checkSavedValue()` that checks if we have the deposit and balance values saved on device. If not we set them both to 0.
 We do this to make sure the UI has something to show while it loads the information from the blockchain.
 Inside the `build()` method we are watching the `ethereumUtilsProvider` and assigning its value to `ehtUtils`.
-To listen to `events` that are emitted by the blockchain (and in this case there is only one) we use a `FutureBuilder` where we receive  the future from `ethUtis.listenContract()`. Depending on the result we present to the one of 3 options:
+To listen to `events` that are emitted by the blockchain (and in this case there is only one) we use a `FutureBuilder` where we receive  the future from `ethUtils.listenContract()`. Depending on the result we present to the one of 3 options:
 * a `CircularProgressIndicator()` if the connection corresponds to the state `ConnectionState.waiting`;
 
 * The ` BalanceWidget()` with the blockchain data if the connection corresponds to the state  `ConnectionState.done` and the `snapshot.data` is not null, Or we show the ` BalanceWidget()` with the information loaded from the device `_prefs` if the connection is done and there is no data from the blockchain.

@@ -10,9 +10,6 @@ Future main() async {
       child: MyApp())); // For accessing riverpod variables globally
 }
 
-//TODO: review the contract balance deposit arithmatic
-//TODO: Change Readme images
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
